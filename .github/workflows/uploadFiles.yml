@@ -63,5 +63,5 @@ jobs:
           ALL_CHANGED_PATCHSCAN_FILES: ${{ steps.changed-patchscan-files.outputs.all_changed_files }}
         run: |
           for file in ${ALL_CHANGED_PATCHSCAN_FILES}; do
-            curl -X POST -H "Accept: application/json" -H "Authorization: Bearer ${{ secrets.OPENRMFPRO_API_TOKEN }}" -F "patchscanFile=@$file" ${{ secrets.OPENRMFPRO_API_ROOT_URL }}/api/external/systempackage/${{ secrets.OPENRMFPRO_API_SYSTEMKEY }}/scapchecklist/\?applicationKey\=${{ secrets.OPENRMFPRO_API_APPLICATIONKEY }}
+            curl -X POST -H "Accept: application/json" -H "Authorization: Bearer ${{ secrets.OPENRMFPRO_API_TOKEN }}" -F "patchscanFile=@$file" ${{ secrets.OPENRMFPRO_API_ROOT_URL }}/api/external/systempackage/${{ secrets.OPENRMFPRO_API_SYSTEMKEY }}/patchscan/\?applicationKey\=${{ secrets.OPENRMFPRO_API_APPLICATIONKEY }}
           done
