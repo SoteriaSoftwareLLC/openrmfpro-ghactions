@@ -1,0 +1,9 @@
+# MAC OSX
+.DS_Store
+# Credentials
+src/*.creds
+# SonarCloud Scanning
+.sonarqube/
+sonar-project.txt
+# settings for individual development machines
+src/.vscode/launch.json
