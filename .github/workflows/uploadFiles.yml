@@ -6,10 +6,6 @@ on:
       - main
 
 jobs:
-  # -------------------------------------------------------------
-  # Using GitHub's API is not supported for push events
-  # -------------------------------------------------------------
-  # 
   # ----------------------------------------------------------------------------------------------
   # Using local .git history
   # ----------------------------------------------------------------------------------------------
@@ -23,15 +19,43 @@ jobs:
         with:
           fetch-depth: 0  # OR "2" -> To retrieve the preceding commit.
 
-      - name: Get changed files
-        id: changed-files
+      - name: Get changed checklist files
+        id: changed-checklist-files
         uses: tj-actions/changed-files@v42
-      # NOTE: `since_last_remote_commit: true` is implied by default and falls back to the previous local commit.
-
-      - name: List all changed files
+        with:
+          files: |
+            checklist-files/**
+          output_renamed_files_as_deleted_and_added: true
+      - name: List all changed checklist files
         env:
-          ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+          ALL_CHANGED_CHECKLIST_FILES: ${{ steps.changed-checklist-files.outputs.all_changed_files }}
         run: |
-          for file in ${ALL_CHANGED_FILES}; do
-            echo "$file was changed"
+          for file in ${ALL_CHANGED_CHECKLIST_FILES}; do
+            echo "$file was changed, so post it"
+          done
+      - name: Get changed compliance scan files
+        id: changed-compliancescan-files
+        uses: tj-actions/changed-files@v42
+        with:
+          files: |
+            compliance-scans/**
+      - name: List all changed compliance scan files
+        env:
+          ALL_CHANGED_COMPLIANCESCAN_FILES: ${{ steps.changed-compliancescan-files.outputs.all_changed_files }}
+        run: |
+          for file in ${ALL_CHANGED_COMPLIANCESCAN_FILES}; do
+            echo "$file was changed, so post it"
+          done
+      - name: Get changed patch scan files
+        id: changed-patchscan-files
+        uses: tj-actions/changed-files@v42
+        with:
+          files: |
+            patch-scans/**
+      - name: List all changed patch scan files
+        env:
+          ALL_CHANGED_PATCHSCAN_FILES: ${{ steps.changed-patchscan-files.outputs.all_changed_files }}
+        run: |
+          for file in ${ALL_CHANGED_PATCHSCAN_FILES}; do
+            echo "$file was changed, so post it"
           done
