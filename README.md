@@ -1,6 +1,5 @@
 # openrmfpro-ghactions
-OpenRMF Professional public repo to show how to handle files and API interactions via GitHub Actions
-
+OpenRMF Professional public repo to show how to handle files and API interactions via GitHub Actions.
 
 ## Get a list of files
 
@@ -8,6 +7,7 @@ https://stackoverflow.com/questions/74854189/call-external-rest-api-when-a-file-
 
 https://github.com/marketplace/actions/changed-files
 
+> DO NOT USE SPACES IN FILENAMES
 
 ## Do something with them 
 
@@ -15,6 +15,7 @@ https://github.com/fjogeleit/http-request-action/blob/main/.github/workflows/ci.
 
 https://github.com/fjogeleit/http-request-action/
 
+An example URL for the checklist/SCAP upload is below with relevant information:
 ```
 https://{root-url}/api/external/systempackage/{systemKey}/scapchecklist/?applicationKey={applicationKey}
 
