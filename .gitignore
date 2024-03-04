@@ -7,3 +7,4 @@ src/*.creds
 sonar-project.txt
 # settings for individual development machines
 src/.vscode/launch.json
+.DS_Store
