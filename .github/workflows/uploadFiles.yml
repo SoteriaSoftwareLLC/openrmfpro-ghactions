@@ -1,4 +1,4 @@
-name: Upload Files
+name: Upload Files to OpenRMF Professional
 
 on:
   push:
@@ -6,13 +6,8 @@ on:
       - main
 
 jobs:
-  # ----------------------------------------------------------------------------------------------
-  # Using local .git history
-  # ----------------------------------------------------------------------------------------------
-  # Event `push`: Compare the preceding remote commit -> to the current commit of the main branch 
-  # ----------------------------------------------------------------------------------------------
   changed_files:
-    runs-on: ubuntu-latest  # windows-latest || macos-latest
+    runs-on: ubuntu-latest 
     name: Track changed-files
     steps:
       - uses: actions/checkout@v4
@@ -25,12 +20,13 @@ jobs:
         with:
           files: |
             checklist-files/**
-      - name: List all changed checklist files
+      - name: Post all changed checklist files
         env:
           ALL_CHANGED_CHECKLIST_FILES: ${{ steps.changed-checklist-files.outputs.all_changed_files }}
         run: |
           for file in ${ALL_CHANGED_CHECKLIST_FILES}; do
-            echo "$file was changed, so post it"
+            curl -X POST -H "Accept: application/json" -H "Authorization: Bearer ${{ secrets.OPENRMFPRO_API_TOKEN }}" -F "checklistFile=@$file" ${{ secrets.OPENRMFPRO_API_ROOT_URL }}/api/external/systempackage/${{ secrets.OPENRMFPRO_API_SYSTEMKEY }}/scapchecklist/\?applicationKey\=${{ secrets.OPENRMFPRO_API_APPLICATIONKEY }}
+            sleep 0.5
           done
       - name: Get changed compliance scan files
         id: changed-compliancescan-files
@@ -38,12 +34,13 @@ jobs:
         with:
           files: |
             compliance-scans/**
-      - name: List all changed compliance scan files
+      - name: Post all changed compliance scan files
         env:
           ALL_CHANGED_COMPLIANCESCAN_FILES: ${{ steps.changed-compliancescan-files.outputs.all_changed_files }}
         run: |
           for file in ${ALL_CHANGED_COMPLIANCESCAN_FILES}; do
-            echo "$file was changed, so post it"
+            curl -X POST -H "Accept: application/json" -H "Authorization: Bearer ${{ secrets.OPENRMFPRO_API_TOKEN }}" -F "checklistFile=@$file" ${{ secrets.OPENRMFPRO_API_ROOT_URL }}/api/external/systempackage/${{ secrets.OPENRMFPRO_API_SYSTEMKEY }}/scapchecklist/\?applicationKey\=${{ secrets.OPENRMFPRO_API_APPLICATIONKEY }}
+            sleep 0.5
           done
       - name: Get changed patch scan files
         id: changed-patchscan-files
@@ -51,17 +48,39 @@ jobs:
         with:
           files: |
             patch-scans/**
-      - name: List all changed patch scan files
-        env:
-          ALL_CHANGED_PATCHSCAN_FILES: ${{ steps.changed-patchscan-files.outputs.all_changed_files }}
-        run: |
-          for file in ${ALL_CHANGED_PATCHSCAN_FILES}; do
-            echo "$file was changed, so post it"
-          done
       - name: Post all Patch Scan Files one at a time
         env:
           ALL_CHANGED_PATCHSCAN_FILES: ${{ steps.changed-patchscan-files.outputs.all_changed_files }}
         run: |
           for file in ${ALL_CHANGED_PATCHSCAN_FILES}; do
             curl -X POST -H "Accept: application/json" -H "Authorization: Bearer ${{ secrets.OPENRMFPRO_API_TOKEN }}" -F "patchscanFile=@$file" ${{ secrets.OPENRMFPRO_API_ROOT_URL }}/api/external/systempackage/${{ secrets.OPENRMFPRO_API_SYSTEMKEY }}/patchscan/\?applicationKey\=${{ secrets.OPENRMFPRO_API_APPLICATIONKEY }}
+            sleep 0.5
+          done
+      - name: Get changed compliance statement files
+        id: changed-compliancestatement-files
+        uses: tj-actions/changed-files@v42
+        with:
+          files: |
+            compliance-statements/**
+      - name: Post all Compliance Statement Files one at a time
+        env:
+          ALL_CHANGED_COMPLIANCESTATEMENT_FILES: ${{ steps.changed-compliancestatement-files.outputs.all_changed_files }}
+        run: |
+          for file in ${ALL_CHANGED_COMPLIANCESTATEMENT_FILES}; do
+            curl -X POST -H "Accept: application/json" -H "Authorization: Bearer ${{ secrets.OPENRMFPRO_API_TOKEN }}" -F "statementFile=@$file" ${{ secrets.OPENRMFPRO_API_ROOT_URL }}/api/external/systempackage/${{ secrets.OPENRMFPRO_API_SYSTEMKEY }}/compliancestatements/\?applicationKey\=${{ secrets.OPENRMFPRO_API_APPLICATIONKEY }}
+            sleep 0.5
+          done
+      - name: Get changed mitigation statement files
+        id: changed-mitigationstatement-files
+        uses: tj-actions/changed-files@v42
+        with:
+          files: |
+            mitigation-statements/**
+      - name: Post all Mitigation Statement Files one at a time
+        env:
+          ALL_CHANGED_MITIGATIONSTATEMENT_FILES: ${{ steps.changed-mitigationstatement-files.outputs.all_changed_files }}
+        run: |
+          for file in ${ALL_CHANGED_MITIGATIONSTATEMENT_FILES}; do
+            curl -X POST -H "Accept: application/json" -H "Authorization: Bearer ${{ secrets.OPENRMFPRO_API_TOKEN }}" -F "mitigationFile=@$file" ${{ secrets.OPENRMFPRO_API_ROOT_URL }}/api/external/systempackage/${{ secrets.OPENRMFPRO_API_SYSTEMKEY }}/mitigationstatements/\?applicationKey\=${{ secrets.OPENRMFPRO_API_APPLICATIONKEY }}
+            sleep 0.5
           done
